@@ -1,0 +1,35 @@
+---
+- name: apt-get update/upgrade
+  apt:
+    update_cache: yes
+    upgrade: 'yes'
+    cache_valid_time: 84600
+
+
+- name: Install a list of packages
+  apt:
+    pkg:
+    - apache2
+    - mysql-server
+    - python3-mysqldb
+    - php
+    - php-mysql
+    - php-mbstring
+    - libapache2-mod-php
+
+- name: remove virtualhost wordpress
+  command: a2dissite 000-default.conf
+  args:
+    removes: /etc/apache2/sites-enabled/000-default.conf
+  notify: relancer Apache
+
+- name: virtualhost
+  template:
+    src: templates/wordpress.conf
+    dest: /etc/apache2/sites-available/wordpress.conf
+
+- name: add virtualhost wordpress
+  command: a2ensite wordpress.conf
+  args:
+    creates: /etc/apache2/sites-enabled/000-default.conf
+  notify: relancer Apache

@@ -1,0 +1,10 @@
+---
+- name: install Wordpress
+  hosts: wordpress
+  gather_facts: false
+  remote_user: root
+
+  roles:
+    - serveur
+    - mysql
+    - wp_cli
